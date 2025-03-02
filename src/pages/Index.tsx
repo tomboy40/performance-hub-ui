@@ -40,6 +40,7 @@ const Index = () => {
               <InterfaceStatus 
                 data={data} 
                 onSelectInterface={openDetails} 
+                summaryView={true}
               />
             </div>
             
