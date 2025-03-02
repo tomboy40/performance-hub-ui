@@ -28,10 +28,10 @@ const Index = () => {
 
   return (
     <SidebarProvider>
-      <div className="flex min-h-screen w-full bg-gray-50 dark:bg-gray-900">
+      <div className="flex min-h-screen w-full bg-background">
         <DashboardLayout>
           <div className="container px-4 py-6 mx-auto transition-all duration-300 ease-in-out">
-            <h1 className="text-3xl font-semibold tracking-tight mb-8 text-gray-900 dark:text-gray-100">
+            <h1 className="text-3xl font-semibold tracking-tight mb-8">
               System Health Dashboard
             </h1>
             

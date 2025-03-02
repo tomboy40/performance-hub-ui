@@ -45,7 +45,7 @@ const InterfaceStatus = ({ data, onSelectInterface }: InterfaceStatusProps) => {
           transition={{ duration: 0.4 }}
           className="lg:col-span-2"
         >
-          <Card className="border-none shadow-lg h-full">
+          <Card className="border shadow-sm h-full">
             <CardHeader>
               <CardTitle>Interface Monitoring</CardTitle>
               <CardDescription>
@@ -93,7 +93,7 @@ const InterfaceStatus = ({ data, onSelectInterface }: InterfaceStatusProps) => {
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.4 }}
         >
-          <Card className="border-none shadow-lg h-full">
+          <Card className="border shadow-sm h-full">
             <CardHeader>
               <CardTitle>SLA Status Overview</CardTitle>
               <CardDescription>
@@ -132,7 +132,7 @@ const InterfaceStatus = ({ data, onSelectInterface }: InterfaceStatusProps) => {
                   </div>
                   <div className="text-sm font-medium">{breached} ({Math.round(breached/total*100)}%)</div>
                 </div>
-                <Progress value={breached/total*100} className="h-2 bg-gray-200" indicatorClassName="bg-red-500" />
+                <Progress value={breached/total*100} className="h-2 bg-gray-200" />
                 
                 <div className="flex justify-between items-center">
                   <div className="flex items-center gap-2">
@@ -141,7 +141,7 @@ const InterfaceStatus = ({ data, onSelectInterface }: InterfaceStatusProps) => {
                   </div>
                   <div className="text-sm font-medium">{atRisk} ({Math.round(atRisk/total*100)}%)</div>
                 </div>
-                <Progress value={atRisk/total*100} className="h-2 bg-gray-200" indicatorClassName="bg-orange-500" />
+                <Progress value={atRisk/total*100} className="h-2 bg-gray-200" />
                 
                 <div className="flex justify-between items-center">
                   <div className="flex items-center gap-2">
@@ -150,7 +150,7 @@ const InterfaceStatus = ({ data, onSelectInterface }: InterfaceStatusProps) => {
                   </div>
                   <div className="text-sm font-medium">{onSchedule} ({Math.round(onSchedule/total*100)}%)</div>
                 </div>
-                <Progress value={onSchedule/total*100} className="h-2 bg-gray-200" indicatorClassName="bg-emerald-500" />
+                <Progress value={onSchedule/total*100} className="h-2 bg-gray-200" />
               </div>
             </CardContent>
           </Card>
@@ -180,7 +180,7 @@ const InterfaceList = ({ interfaces, onSelectInterface }: InterfaceListProps) =>
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.3 }}
             whileHover={{ scale: 1.01 }}
-            className="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-4 cursor-pointer border border-gray-100 dark:border-gray-700 hover:shadow-md transition-all"
+            className="bg-card rounded-lg shadow-sm p-4 cursor-pointer border border-border hover:bg-accent/50 transition-all"
             onClick={() => onSelectInterface(item.id)}
           >
             <div className="flex justify-between">
@@ -189,11 +189,11 @@ const InterfaceList = ({ interfaces, onSelectInterface }: InterfaceListProps) =>
                   <h3 className="font-medium">{item.name}</h3>
                   <StatusBadge status={item.status} />
                 </div>
-                <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
+                <p className="text-sm text-muted-foreground mt-1">
                   {item.type} • {item.application}
                 </p>
               </div>
-              <div className="flex items-center text-gray-400">
+              <div className="flex items-center text-muted-foreground">
                 <Clock className="h-4 w-4 mr-1" />
                 <span className="text-xs">{item.nextRun}</span>
                 <ChevronRight className="h-5 w-5 ml-2" />
