@@ -1,13 +1,60 @@
-// Update this page (the content is just a fallback if you fail to update the page)
+
+import { useEffect, useState } from "react";
+import { SidebarProvider } from "@/components/ui/sidebar";
+import DashboardLayout from "@/components/DashboardLayout";
+import Overview from "@/components/Overview";
+import InterfaceStatus from "@/components/InterfaceStatus";
+import InterfaceDetails from "@/components/InterfaceDetails";
+import { mockData } from "@/data/mockData";
 
 const Index = () => {
+  const [selectedInterface, setSelectedInterface] = useState<string | null>(null);
+  const [showDetails, setShowDetails] = useState(false);
+  const [data, setData] = useState(mockData);
+
+  const closeDetails = () => {
+    setShowDetails(false);
+    setTimeout(() => {
+      setSelectedInterface(null);
+    }, 300);
+  };
+
+  const openDetails = (id: string) => {
+    setSelectedInterface(id);
+    setTimeout(() => {
+      setShowDetails(true);
+    }, 100);
+  };
+
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100">
-      <div className="text-center">
-        <h1 className="text-4xl font-bold mb-4">Welcome to Your Blank App</h1>
-        <p className="text-xl text-gray-600">Start building your amazing project here!</p>
+    <SidebarProvider>
+      <div className="flex min-h-screen w-full bg-gray-50 dark:bg-gray-900">
+        <DashboardLayout>
+          <div className="container px-4 py-6 mx-auto transition-all duration-300 ease-in-out">
+            <h1 className="text-3xl font-semibold tracking-tight mb-8 text-gray-900 dark:text-gray-100">
+              System Health Dashboard
+            </h1>
+            
+            <div className={`transition-all duration-500 ease-in-out transform ${showDetails ? 'opacity-0 -translate-x-10 h-0 overflow-hidden' : 'opacity-100 translate-x-0'}`}>
+              <Overview data={data} />
+              <InterfaceStatus 
+                data={data} 
+                onSelectInterface={openDetails} 
+              />
+            </div>
+            
+            <div className={`transition-all duration-500 ease-in-out transform ${!showDetails ? 'opacity-0 translate-x-10 h-0 overflow-hidden' : 'opacity-100 translate-x-0'}`}>
+              {selectedInterface && (
+                <InterfaceDetails 
+                  interfaceData={data.interfaces.find(i => i.id === selectedInterface)!} 
+                  onBack={closeDetails}
+                />
+              )}
+            </div>
+          </div>
+        </DashboardLayout>
       </div>
-    </div>
+    </SidebarProvider>
   );
 };
 
