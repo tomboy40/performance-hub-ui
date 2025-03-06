@@ -7,7 +7,7 @@ import InterfaceStatus from "@/components/InterfaceStatus";
 import InterfaceDetails from "@/components/InterfaceDetails";
 import { mockData } from "@/data/mockData";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { AlertCircle, AlertTriangle, CheckCircle, ArrowRight } from "lucide-react";
+import { AlertCircle, AlertTriangle, CheckCircle, ArrowRight, Clock, Eye, Folder, Database } from "lucide-react";
 import { Progress } from "@/components/ui/progress";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell } from "recharts";
 import { Badge } from "@/components/ui/badge";
@@ -46,16 +46,14 @@ const Index = () => {
     { name: "On Schedule", value: onSchedule, color: "#10b981" }
   ];
 
-  // Get most critical interfaces (those breached or at risk)
-  const criticalInterfaces = data.interfaces
-    .filter(i => i.status === "breached" || i.status === "at-risk")
-    .sort((a, b) => {
-      // Sort breached first, then at-risk
-      if (a.status === "breached" && b.status !== "breached") return -1;
-      if (a.status !== "breached" && b.status === "breached") return 1;
-      return 0;
-    })
-    .slice(0, 5); // Top 5 critical interfaces
+  // Mock data for recently viewed items
+  const recentItems = [
+    { type: "application", name: "Order Processing System", date: "Today, 10:30 AM", icon: Folder },
+    { type: "interface", name: "Payment Gateway API", date: "Yesterday, 3:45 PM", icon: ArrowRight },
+    { type: "dataset", name: "Customer Records", date: "Yesterday, 11:20 AM", icon: Database },
+    { type: "application", name: "Inventory Management", date: "2 days ago", icon: Folder },
+    { type: "interface", name: "Shipping Integration", date: "3 days ago", icon: ArrowRight },
+  ];
 
   return (
     <SidebarProvider>
@@ -73,9 +71,11 @@ const Index = () => {
               <div className="mb-8">
                 <div className="flex justify-between items-center mb-4">
                   <h2 className="text-xl font-semibold">Interface Status Overview</h2>
-                  <Button variant="outline" size="sm" href="/interfaces" className="gap-1">
-                    <span>View All Interfaces</span>
-                    <ArrowRight className="h-4 w-4" />
+                  <Button variant="outline" size="sm" asChild className="gap-1">
+                    <a href="/interfaces">
+                      <span>View All Interfaces</span>
+                      <ArrowRight className="h-4 w-4" />
+                    </a>
                   </Button>
                 </div>
                 
@@ -200,46 +200,45 @@ const Index = () => {
                 </div>
               </div>
               
-              {/* Critical Interfaces Card - Fills the empty bottom-left area */}
+              {/* Recently Viewed Items - Replacing Critical Interface Alerts */}
               <div className="mb-8">
-                <h2 className="text-xl font-semibold mb-4">Critical Interface Alerts</h2>
+                <h2 className="text-xl font-semibold mb-4">Recent Activity</h2>
                 <Card>
                   <CardHeader className="pb-2">
-                    <CardTitle>Top Critical Interfaces</CardTitle>
+                    <CardTitle>Recently Viewed Items</CardTitle>
                     <CardDescription>
-                      Interfaces requiring immediate attention
+                      Quick access to your recent applications, interfaces, and datasets
                     </CardDescription>
                   </CardHeader>
                   <CardContent>
                     <div className="space-y-3">
-                      {criticalInterfaces.length === 0 ? (
-                        <div className="text-center py-8 text-muted-foreground">
-                          No critical interfaces at this time
-                        </div>
-                      ) : (
-                        criticalInterfaces.map((item) => (
-                          <motion.div
-                            key={item.id}
-                            initial={{ opacity: 0, y: 10 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            transition={{ duration: 0.3 }}
-                            className="bg-card rounded-lg p-3 border border-border hover:bg-accent/50 transition-all cursor-pointer"
-                            onClick={() => openDetails(item.id)}
-                          >
-                            <div className="flex justify-between items-center">
+                      {recentItems.map((item, index) => (
+                        <motion.div
+                          key={index}
+                          initial={{ opacity: 0, y: 10 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          transition={{ duration: 0.3, delay: index * 0.05 }}
+                          className="bg-card rounded-lg p-3 border border-border hover:bg-accent/50 transition-all cursor-pointer group"
+                        >
+                          <div className="flex justify-between items-center">
+                            <div className="flex items-center gap-3">
+                              <div className="bg-primary/10 p-2 rounded-md text-primary">
+                                <item.icon className="h-5 w-5" />
+                              </div>
                               <div>
-                                <div className="flex items-center gap-2">
-                                  <h3 className="font-medium">{item.name}</h3>
-                                  <StatusBadge status={item.status} />
-                                </div>
-                                <p className="text-sm text-muted-foreground mt-1">
-                                  {item.type} • {item.application}
+                                <h3 className="font-medium group-hover:text-primary transition-colors">{item.name}</h3>
+                                <p className="text-sm text-muted-foreground flex items-center gap-1">
+                                  <Clock className="h-3 w-3" />
+                                  {item.date}
                                 </p>
                               </div>
                             </div>
-                          </motion.div>
-                        ))
-                      )}
+                            <Badge variant="outline" className="capitalize">
+                              {item.type}
+                            </Badge>
+                          </div>
+                        </motion.div>
+                      ))}
                     </div>
                   </CardContent>
                 </Card>
