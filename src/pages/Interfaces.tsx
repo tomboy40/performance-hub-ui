@@ -40,7 +40,7 @@ const Interfaces = () => {
                         <StatusBadge status={interfaceItem.status} />
                       </div>
                       <CardDescription>
-                        {interfaceItem.system} → {interfaceItem.target}
+                        {interfaceItem.application} → {interfaceItem.type}
                       </CardDescription>
                     </CardHeader>
                     <CardContent>
@@ -48,7 +48,7 @@ const Interfaces = () => {
                         <div className="grid grid-cols-2 gap-2 text-sm">
                           <div>
                             <p className="text-muted-foreground">Last Updated</p>
-                            <p className="font-medium">{interfaceItem.lastUpdated}</p>
+                            <p className="font-medium">{interfaceItem.lastUpdate}</p>
                           </div>
                           <div>
                             <p className="text-muted-foreground">SLA Status</p>
@@ -59,8 +59,8 @@ const Interfaces = () => {
                             <p className="font-medium">{interfaceItem.type}</p>
                           </div>
                           <div>
-                            <p className="text-muted-foreground">Messages</p>
-                            <p className="font-medium">{interfaceItem.messages.toLocaleString()}</p>
+                            <p className="text-muted-foreground">Next Run</p>
+                            <p className="font-medium">{interfaceItem.nextRun}</p>
                           </div>
                         </div>
                         <Button variant="outline" size="sm" className="w-full" asChild>
