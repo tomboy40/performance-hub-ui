@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import DashboardLayout from "@/components/DashboardLayout";
@@ -13,6 +12,7 @@ import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContaine
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { motion } from "framer-motion";
+import { Link } from "react-router-dom";
 
 const Index = () => {
   const [selectedInterface, setSelectedInterface] = useState<string | null>(null);
@@ -33,20 +33,17 @@ const Index = () => {
     }, 100);
   };
 
-  // Calculate status counts
   const breached = data.interfaces.filter(i => i.status === "breached").length;
   const atRisk = data.interfaces.filter(i => i.status === "at-risk").length;
   const onSchedule = data.interfaces.filter(i => i.status === "on-schedule").length;
   const total = data.interfaces.length;
 
-  // Data for bar chart - better for visual comparison than donut
   const statusData = [
     { name: "SLA Breached", value: breached, color: "#ef4444" },
     { name: "SLA at Risk", value: atRisk, color: "#f97316" },
     { name: "On Schedule", value: onSchedule, color: "#10b981" }
   ];
 
-  // Mock data for recently viewed items
   const recentItems = [
     { type: "application", name: "Order Processing System", date: "Today, 10:30 AM", icon: Folder },
     { type: "interface", name: "Payment Gateway API", date: "Yesterday, 3:45 PM", icon: ArrowRight },
@@ -67,20 +64,18 @@ const Index = () => {
             <div className={`transition-all duration-500 ease-in-out ${showDetails ? 'opacity-0 scale-95 h-0 overflow-hidden' : 'opacity-100 scale-100'}`}>
               <Overview data={data} />
               
-              {/* Unified SLA Status Overview - Replaces duplicate content */}
               <div className="mb-8">
                 <div className="flex justify-between items-center mb-4">
                   <h2 className="text-xl font-semibold">Interface Status Overview</h2>
                   <Button variant="outline" size="sm" asChild className="gap-1">
-                    <a href="/interfaces">
+                    <Link to="/interfaces">
                       <span>View All Interfaces</span>
                       <ArrowRight className="h-4 w-4" />
-                    </a>
+                    </Link>
                   </Button>
                 </div>
                 
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                  {/* Status Metrics Card */}
                   <motion.div
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
@@ -148,7 +143,6 @@ const Index = () => {
                     </Card>
                   </motion.div>
                   
-                  {/* Bar Chart - Better for comparison than donut */}
                   <motion.div 
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
@@ -200,7 +194,6 @@ const Index = () => {
                 </div>
               </div>
               
-              {/* Recently Viewed Items - Replacing Critical Interface Alerts */}
               <div className="mb-8">
                 <h2 className="text-xl font-semibold mb-4">Recent Activity</h2>
                 <Card>
@@ -260,7 +253,6 @@ const Index = () => {
   );
 };
 
-// Helper component for status badges
 const StatusBadge = ({ status }: { status: string }) => {
   switch (status) {
     case "breached":
