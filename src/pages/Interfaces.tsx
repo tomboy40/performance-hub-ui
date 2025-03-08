@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import DashboardLayout from "@/components/DashboardLayout";
@@ -64,7 +63,7 @@ const Interfaces = () => {
                           </div>
                         </div>
                         <Button variant="outline" size="sm" className="w-full" asChild>
-                          <Link to={`/?interface=${interfaceItem.id}`}>View Details</Link>
+                          <Link to={`/interfaces/${interfaceItem.id}`}>View Details</Link>
                         </Button>
                       </div>
                     </CardContent>
@@ -79,7 +78,6 @@ const Interfaces = () => {
   );
 };
 
-// Helper component for status badges
 const StatusBadge = ({ status }: { status: string }) => {
   switch (status) {
     case "breached":
