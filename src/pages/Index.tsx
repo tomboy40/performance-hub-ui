@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import DashboardLayout from "@/components/DashboardLayout";
@@ -6,18 +7,20 @@ import InterfaceStatus from "@/components/InterfaceStatus";
 import InterfaceDetails from "@/components/InterfaceDetails";
 import { mockData } from "@/data/mockData";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { AlertCircle, AlertTriangle, CheckCircle, ArrowRight, Clock, Eye, Folder, Database } from "lucide-react";
+import { AlertCircle, AlertTriangle, CheckCircle, ArrowRight, Clock, Eye, Folder, Database, Pin, PinOff } from "lucide-react";
 import { Progress } from "@/components/ui/progress";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell } from "recharts";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
+import { toast } from "@/components/ui/use-toast";
 
 const Index = () => {
   const [selectedInterface, setSelectedInterface] = useState<string | null>(null);
   const [showDetails, setShowDetails] = useState(false);
   const [data] = useState(mockData);
+  const [pinnedItems, setPinnedItems] = useState<string[]>([]);
 
   const closeDetails = () => {
     setShowDetails(false);
@@ -33,6 +36,22 @@ const Index = () => {
     }, 100);
   };
 
+  const togglePin = (itemName: string) => {
+    if (pinnedItems.includes(itemName)) {
+      setPinnedItems(pinnedItems.filter(name => name !== itemName));
+      toast({
+        title: "Item unpinned",
+        description: `${itemName} has been removed from your pinned items.`,
+      });
+    } else {
+      setPinnedItems([...pinnedItems, itemName]);
+      toast({
+        title: "Item pinned",
+        description: `${itemName} has been added to your pinned items.`,
+      });
+    }
+  };
+
   const breached = data.interfaces.filter(i => i.status === "breached").length;
   const atRisk = data.interfaces.filter(i => i.status === "at-risk").length;
   const onSchedule = data.interfaces.filter(i => i.status === "on-schedule").length;
@@ -45,11 +64,41 @@ const Index = () => {
   ];
 
   const recentItems = [
-    { type: "application", name: "Order Processing System", date: "Today, 10:30 AM", icon: Folder },
-    { type: "interface", name: "Payment Gateway API", date: "Yesterday, 3:45 PM", icon: ArrowRight },
-    { type: "dataset", name: "Customer Records", date: "Yesterday, 11:20 AM", icon: Database },
-    { type: "application", name: "Inventory Management", date: "2 days ago", icon: Folder },
-    { type: "interface", name: "Shipping Integration", date: "3 days ago", icon: ArrowRight },
+    { 
+      type: "application", 
+      name: "Order Processing System", 
+      date: "Today, 10:30 AM", 
+      icon: Folder,
+      status: "on-schedule" 
+    },
+    { 
+      type: "interface", 
+      name: "Payment Gateway API", 
+      date: "Yesterday, 3:45 PM", 
+      icon: ArrowRight,
+      status: "at-risk" 
+    },
+    { 
+      type: "dataset", 
+      name: "Customer Records", 
+      date: "Yesterday, 11:20 AM", 
+      icon: Database,
+      status: "breached" 
+    },
+    { 
+      type: "application", 
+      name: "Inventory Management", 
+      date: "2 days ago", 
+      icon: Folder,
+      status: "on-schedule" 
+    },
+    { 
+      type: "interface", 
+      name: "Shipping Integration", 
+      date: "3 days ago", 
+      icon: ArrowRight,
+      status: "breached" 
+    },
   ];
 
   return (
@@ -219,16 +268,36 @@ const Index = () => {
                                 <item.icon className="h-5 w-5" />
                               </div>
                               <div>
-                                <h3 className="font-medium group-hover:text-primary transition-colors">{item.name}</h3>
+                                <div className="flex items-center gap-2">
+                                  <h3 className="font-medium group-hover:text-primary transition-colors">{item.name}</h3>
+                                  <StatusBadge status={item.status} />
+                                </div>
                                 <p className="text-sm text-muted-foreground flex items-center gap-1">
                                   <Clock className="h-3 w-3" />
                                   {item.date}
                                 </p>
                               </div>
                             </div>
-                            <Badge variant="outline" className="capitalize">
-                              {item.type}
-                            </Badge>
+                            <div className="flex items-center gap-2">
+                              <Badge variant="outline" className="capitalize">
+                                {item.type}
+                              </Badge>
+                              <Button 
+                                variant="ghost" 
+                                size="icon" 
+                                className="h-8 w-8" 
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  togglePin(item.name);
+                                }}
+                              >
+                                {pinnedItems.includes(item.name) ? (
+                                  <Pin className="h-4 w-4 text-primary" />
+                                ) : (
+                                  <PinOff className="h-4 w-4 text-muted-foreground" />
+                                )}
+                              </Button>
+                            </div>
                           </div>
                         </motion.div>
                       ))}
