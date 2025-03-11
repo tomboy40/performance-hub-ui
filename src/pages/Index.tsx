@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import DashboardLayout from "@/components/DashboardLayout";
@@ -69,35 +68,60 @@ const Index = () => {
       name: "Order Processing System", 
       date: "Today, 10:30 AM", 
       icon: Folder,
-      status: "on-schedule" 
+      status: "on-schedule",
+      metrics: {
+        breached: 2,
+        atRisk: 3,
+        onSchedule: 15
+      }
     },
     { 
       type: "interface", 
       name: "Payment Gateway API", 
       date: "Yesterday, 3:45 PM", 
       icon: ArrowRight,
-      status: "at-risk" 
+      status: "at-risk",
+      metrics: {
+        breached: 1,
+        atRisk: 5,
+        onSchedule: 8
+      }
     },
     { 
       type: "dataset", 
       name: "Customer Records", 
       date: "Yesterday, 11:20 AM", 
       icon: Database,
-      status: "breached" 
+      status: "breached",
+      metrics: {
+        breached: 4,
+        atRisk: 2,
+        onSchedule: 6
+      }
     },
     { 
       type: "application", 
       name: "Inventory Management", 
       date: "2 days ago", 
       icon: Folder,
-      status: "on-schedule" 
+      status: "on-schedule",
+      metrics: {
+        breached: 0,
+        atRisk: 2,
+        onSchedule: 12
+      }
     },
     { 
       type: "interface", 
       name: "Shipping Integration", 
       date: "3 days ago", 
       icon: ArrowRight,
-      status: "breached" 
+      status: "breached",
+      metrics: {
+        breached: 3,
+        atRisk: 4,
+        onSchedule: 5
+      }
     },
   ];
 
@@ -270,7 +294,6 @@ const Index = () => {
                               <div>
                                 <div className="flex items-center gap-2">
                                   <h3 className="font-medium group-hover:text-primary transition-colors">{item.name}</h3>
-                                  <StatusBadge status={item.status} />
                                 </div>
                                 <p className="text-sm text-muted-foreground flex items-center gap-1">
                                   <Clock className="h-3 w-3" />
@@ -278,25 +301,63 @@ const Index = () => {
                                 </p>
                               </div>
                             </div>
-                            <div className="flex items-center gap-2">
-                              <Badge variant="outline" className="capitalize">
-                                {item.type}
-                              </Badge>
-                              <Button 
-                                variant="ghost" 
-                                size="icon" 
-                                className="h-8 w-8" 
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  togglePin(item.name);
-                                }}
-                              >
-                                {pinnedItems.includes(item.name) ? (
-                                  <Pin className="h-4 w-4 text-primary" />
-                                ) : (
-                                  <PinOff className="h-4 w-4 text-muted-foreground" />
-                                )}
-                              </Button>
+                            <div className="flex items-center gap-3">
+                              <div className="flex items-center gap-2">
+                                <div className="flex flex-col items-end">
+                                  <div className="flex items-center gap-1.5">
+                                    <span className="text-xs text-destructive font-medium flex items-center">
+                                      <AlertCircle className="h-3 w-3 mr-0.5" />
+                                      {item.metrics.breached}
+                                    </span>
+                                    <span className="text-xs text-amber-500 font-medium flex items-center">
+                                      <AlertTriangle className="h-3 w-3 mr-0.5" />
+                                      {item.metrics.atRisk}
+                                    </span>
+                                    <span className="text-xs text-emerald-500 font-medium flex items-center">
+                                      <CheckCircle className="h-3 w-3 mr-0.5" />
+                                      {item.metrics.onSchedule}
+                                    </span>
+                                  </div>
+                                  <div className="w-full h-1.5 bg-gray-100 dark:bg-gray-800 rounded-full mt-1 overflow-hidden flex">
+                                    <div 
+                                      className="h-full bg-destructive" 
+                                      style={{ 
+                                        width: `${(item.metrics.breached / (item.metrics.breached + item.metrics.atRisk + item.metrics.onSchedule)) * 100}%` 
+                                      }}
+                                    />
+                                    <div 
+                                      className="h-full bg-amber-500" 
+                                      style={{ 
+                                        width: `${(item.metrics.atRisk / (item.metrics.breached + item.metrics.atRisk + item.metrics.onSchedule)) * 100}%` 
+                                      }}
+                                    />
+                                    <div 
+                                      className="h-full bg-emerald-500" 
+                                      style={{ 
+                                        width: `${(item.metrics.onSchedule / (item.metrics.breached + item.metrics.atRisk + item.metrics.onSchedule)) * 100}%` 
+                                      }}
+                                    />
+                                  </div>
+                                </div>
+                                <Badge variant="outline" className="capitalize ml-2">
+                                  {item.type}
+                                </Badge>
+                                <Button 
+                                  variant="ghost" 
+                                  size="icon" 
+                                  className="h-8 w-8" 
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    togglePin(item.name);
+                                  }}
+                                >
+                                  {pinnedItems.includes(item.name) ? (
+                                    <Pin className="h-4 w-4 text-primary" />
+                                  ) : (
+                                    <PinOff className="h-4 w-4 text-muted-foreground" />
+                                  )}
+                                </Button>
+                              </div>
                             </div>
                           </div>
                         </motion.div>
