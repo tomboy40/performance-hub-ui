@@ -19,8 +19,10 @@ import {
   BarChart3, 
   Bell, 
   Users,
-  LogOut
+  LogOut,
+  RefreshCw
 } from "lucide-react";
+import { useLocation } from "react-router-dom";
 
 interface DashboardLayoutProps {
   children: ReactNode;
@@ -41,6 +43,8 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
 };
 
 const AppSidebar = () => {
+  const location = useLocation();
+  
   return (
     <Sidebar>
       <SidebarContent>
@@ -58,7 +62,7 @@ const AppSidebar = () => {
           <SidebarGroupContent>
             <SidebarMenu>
               <SidebarMenuItem>
-                <SidebarMenuButton className="bg-sidebar-accent" asChild>
+                <SidebarMenuButton className={location.pathname === "/" ? "bg-sidebar-accent" : ""} asChild>
                   <a href="/">
                     <LayoutDashboard className="w-5 h-5" />
                     <span>Dashboard</span>
@@ -66,10 +70,18 @@ const AppSidebar = () => {
                 </SidebarMenuButton>
               </SidebarMenuItem>
               <SidebarMenuItem>
-                <SidebarMenuButton asChild>
-                  <a href="#">
+                <SidebarMenuButton className={location.pathname.includes("/interfaces") ? "bg-sidebar-accent" : ""} asChild>
+                  <a href="/interfaces">
                     <Activity className="w-5 h-5" />
-                    <span>Activity</span>
+                    <span>Interfaces</span>
+                  </a>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+              <SidebarMenuItem>
+                <SidebarMenuButton className={location.pathname === "/dlas-sync" ? "bg-sidebar-accent" : ""} asChild>
+                  <a href="/dlas-sync">
+                    <RefreshCw className="w-5 h-5" />
+                    <span>DLAS Sync</span>
                   </a>
                 </SidebarMenuButton>
               </SidebarMenuItem>
