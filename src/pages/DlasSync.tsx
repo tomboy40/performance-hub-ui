@@ -7,7 +7,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Progress } from "@/components/ui/progress";
 import { Separator } from "@/components/ui/separator";
-import { AlertCircle, Clock, Play, Calendar, ArrowUp, CheckCircle, XCircle } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
+import { AlertCircle, Clock, Play, Calendar, ArrowUp, CheckCircle, XCircle, RefreshCw } from "lucide-react";
 import { toast } from "@/components/ui/use-toast";
 import { motion } from "framer-motion";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -137,7 +138,7 @@ const DlasSync = () => {
                   <CardHeader className="pb-2">
                     <CardTitle className="text-base font-medium">Status</CardTitle>
                   </CardHeader>
-                  <CardContent>
+                  <CardContent className="pt-2">
                     <StatusIndicator />
                   </CardContent>
                 </Card>
@@ -152,7 +153,7 @@ const DlasSync = () => {
                   <CardHeader className="pb-2">
                     <CardTitle className="text-base font-medium">Last Run</CardTitle>
                   </CardHeader>
-                  <CardContent>
+                  <CardContent className="pt-2">
                     <div className="flex items-center gap-2 text-foreground">
                       <Clock className="h-4 w-4 text-primary" />
                       <span className="font-medium text-lg">{syncData.lastRun}</span>
@@ -170,7 +171,7 @@ const DlasSync = () => {
                   <CardHeader className="pb-2">
                     <CardTitle className="text-base font-medium">Next Run</CardTitle>
                   </CardHeader>
-                  <CardContent>
+                  <CardContent className="pt-2">
                     <div>
                       <div className="flex items-center gap-2 text-foreground">
                         <Calendar className="h-4 w-4 text-primary" />
@@ -214,8 +215,13 @@ const DlasSync = () => {
                   
                   <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
                     <div className="bg-card border rounded-lg p-4">
-                      <h3 className="text-sm font-medium text-muted-foreground mb-3">Applications</h3>
-                      <div className="space-y-1">
+                      <div className="flex items-center justify-between">
+                        <h3 className="text-sm font-medium text-muted-foreground">Applications</h3>
+                        <Badge variant={syncData.applications.successRate === 100 ? "default" : syncData.applications.successRate > 50 ? "secondary" : "destructive"}>
+                          {syncData.applications.successRate}%
+                        </Badge>
+                      </div>
+                      <div className="space-y-1 mt-2">
                         <div className="flex justify-between">
                           <span className="text-sm">Total:</span>
                           <span className="font-medium">{syncData.applications.total}</span>
@@ -228,20 +234,17 @@ const DlasSync = () => {
                               : syncData.applications.processed}
                           </span>
                         </div>
-                        <div className="flex justify-between">
-                          <span className="text-sm">Success Rate:</span>
-                          <span className="font-medium text-emerald-500">
-                            {isSyncing 
-                              ? <Skeleton className="h-4 w-12 inline-block" /> 
-                              : `${syncData.applications.successRate}%`}
-                          </span>
-                        </div>
                       </div>
                     </div>
                     
                     <div className="bg-card border rounded-lg p-4">
-                      <h3 className="text-sm font-medium text-muted-foreground mb-3">Interfaces</h3>
-                      <div className="space-y-1">
+                      <div className="flex items-center justify-between">
+                        <h3 className="text-sm font-medium text-muted-foreground">Interfaces</h3>
+                        <Badge variant={syncData.interfaces.successRate === 100 ? "default" : syncData.interfaces.successRate > 50 ? "secondary" : "destructive"}>
+                          {syncData.interfaces.successRate}%
+                        </Badge>
+                      </div>
+                      <div className="space-y-1 mt-2">
                         <div className="flex justify-between">
                           <span className="text-sm">Total:</span>
                           <span className="font-medium">{syncData.interfaces.total}</span>
@@ -254,20 +257,17 @@ const DlasSync = () => {
                               : syncData.interfaces.processed}
                           </span>
                         </div>
-                        <div className="flex justify-between">
-                          <span className="text-sm">Success Rate:</span>
-                          <span className="font-medium text-amber-500">
-                            {isSyncing 
-                              ? <Skeleton className="h-4 w-12 inline-block" /> 
-                              : `${syncData.interfaces.successRate}%`}
-                          </span>
-                        </div>
                       </div>
                     </div>
                     
                     <div className="bg-card border rounded-lg p-4">
-                      <h3 className="text-sm font-medium text-muted-foreground mb-3">Datasets</h3>
-                      <div className="space-y-1">
+                      <div className="flex items-center justify-between">
+                        <h3 className="text-sm font-medium text-muted-foreground">Datasets</h3>
+                        <Badge variant={syncData.datasets.successRate === 100 ? "default" : syncData.datasets.successRate > 50 ? "secondary" : "destructive"}>
+                          {syncData.datasets.successRate}%
+                        </Badge>
+                      </div>
+                      <div className="space-y-1 mt-2">
                         <div className="flex justify-between">
                           <span className="text-sm">Total:</span>
                           <span className="font-medium">{syncData.datasets.total}</span>
@@ -278,14 +278,6 @@ const DlasSync = () => {
                             {isSyncing 
                               ? <Skeleton className="h-4 w-8 inline-block" /> 
                               : syncData.datasets.processed}
-                          </span>
-                        </div>
-                        <div className="flex justify-between">
-                          <span className="text-sm">Success Rate:</span>
-                          <span className="font-medium text-destructive">
-                            {isSyncing 
-                              ? <Skeleton className="h-4 w-12 inline-block" /> 
-                              : `${syncData.datasets.successRate}%`}
                           </span>
                         </div>
                       </div>
@@ -343,7 +335,6 @@ const DlasSync = () => {
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.3, delay: 0.5 }}
-              className="mb-4"
             >
               <div className="flex items-center text-sm mb-6">
                 <div className={`w-2 h-2 rounded-full ${isConnected ? "bg-emerald-500" : "bg-destructive"} mr-2`}></div>
@@ -380,7 +371,7 @@ const DlasSync = () => {
                       disabled={isSyncing}
                       className="gap-2"
                     >
-                      <Play className="h-4 w-4" />
+                      <RefreshCw className="h-4 w-4" />
                       {isSyncing ? "Syncing..." : "Start Sync"}
                     </Button>
                   </div>
