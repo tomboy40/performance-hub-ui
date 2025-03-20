@@ -14,6 +14,7 @@ import { Button } from "@/components/ui/button";
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import { toast } from "@/components/ui/use-toast";
+import OrganizationPanel from "@/components/OrganizationPanel";
 
 const Index = () => {
   const [selectedInterface, setSelectedInterface] = useState<string | null>(null);
@@ -136,6 +137,11 @@ const Index = () => {
             
             <div className={`transition-all duration-500 ease-in-out ${showDetails ? 'opacity-0 scale-95 h-0 overflow-hidden' : 'opacity-100 scale-100'}`}>
               <Overview data={data} />
+              
+              <div className="mb-8">
+                <h2 className="text-xl font-semibold mb-4">Organization Overview</h2>
+                <OrganizationPanel />
+              </div>
               
               <div className="mb-8">
                 <div className="flex justify-between items-center mb-4">
