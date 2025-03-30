@@ -15,6 +15,7 @@ import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import { toast } from "@/components/ui/use-toast";
 import OrganizationPanel from "@/components/OrganizationPanel";
+import StatusIndicator from "@/components/StatusIndicator";
 
 const Index = () => {
   const [selectedInterface, setSelectedInterface] = useState<string | null>(null);
@@ -309,42 +310,7 @@ const Index = () => {
                             </div>
                             <div className="flex items-center gap-3">
                               <div className="flex items-center gap-2">
-                                <div className="flex flex-col items-end">
-                                  <div className="flex items-center gap-1.5">
-                                    <span className="text-xs text-destructive font-medium flex items-center">
-                                      <AlertCircle className="h-3 w-3 mr-0.5" />
-                                      {item.metrics.breached}
-                                    </span>
-                                    <span className="text-xs text-amber-500 font-medium flex items-center">
-                                      <AlertTriangle className="h-3 w-3 mr-0.5" />
-                                      {item.metrics.atRisk}
-                                    </span>
-                                    <span className="text-xs text-emerald-500 font-medium flex items-center">
-                                      <CheckCircle className="h-3 w-3 mr-0.5" />
-                                      {item.metrics.onSchedule}
-                                    </span>
-                                  </div>
-                                  <div className="w-full h-1.5 bg-gray-100 dark:bg-gray-800 rounded-full mt-1 overflow-hidden flex">
-                                    <div 
-                                      className="h-full bg-destructive" 
-                                      style={{ 
-                                        width: `${(item.metrics.breached / (item.metrics.breached + item.metrics.atRisk + item.metrics.onSchedule)) * 100}%` 
-                                      }}
-                                    />
-                                    <div 
-                                      className="h-full bg-amber-500" 
-                                      style={{ 
-                                        width: `${(item.metrics.atRisk / (item.metrics.breached + item.metrics.atRisk + item.metrics.onSchedule)) * 100}%` 
-                                      }}
-                                    />
-                                    <div 
-                                      className="h-full bg-emerald-500" 
-                                      style={{ 
-                                        width: `${(item.metrics.onSchedule / (item.metrics.breached + item.metrics.atRisk + item.metrics.onSchedule)) * 100}%` 
-                                      }}
-                                    />
-                                  </div>
-                                </div>
+                                <StatusIndicator status={item.status} size="md" />
                                 <Badge variant="outline" className="capitalize ml-2">
                                   {item.type}
                                 </Badge>
