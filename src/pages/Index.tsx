@@ -132,9 +132,14 @@ const Index = () => {
       <div className="flex min-h-screen bg-background">
         <DashboardLayout>
           <div className="container mx-auto px-4 md:px-6 py-6">
-            <h1 className="text-2xl font-bold tracking-tight mb-6">
-              System Health Dashboard
-            </h1>
+            <div className="flex justify-between items-center mb-6">
+              <h1 className="text-2xl font-bold tracking-tight">
+                System Health Dashboard
+              </h1>
+              <Button variant="outline" asChild>
+                <Link to="/custom-dashboard">Custom Dashboard</Link>
+              </Button>
+            </div>
             
             <div className={`transition-all duration-500 ease-in-out ${showDetails ? 'opacity-0 scale-95 h-0 overflow-hidden' : 'opacity-100 scale-100'}`}>
               <Overview data={data} />

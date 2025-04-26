@@ -1,4 +1,3 @@
-
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -9,6 +8,7 @@ import Interfaces from "./pages/Interfaces";
 import InterfaceDetailsPage from "./pages/InterfaceDetailsPage";
 import DlasSync from "./pages/DlasSync";
 import NotFound from "./pages/NotFound";
+import CustomDashboard from "./pages/CustomDashboard";
 
 const queryClient = new QueryClient();
 
@@ -23,7 +23,7 @@ const App = () => (
           <Route path="/interfaces" element={<Interfaces />} />
           <Route path="/interfaces/:id" element={<InterfaceDetailsPage />} />
           <Route path="/dlas-sync" element={<DlasSync />} />
-          {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+          <Route path="/custom-dashboard" element={<CustomDashboard />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>
