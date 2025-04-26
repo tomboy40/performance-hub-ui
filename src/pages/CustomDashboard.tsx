@@ -27,7 +27,15 @@ const CustomDashboard = () => {
 
   useEffect(() => {
     localStorage.setItem("custom-dashboards", JSON.stringify(dashboards));
-  }, [dashboards]);
+    
+    // Update currentDashboard whenever dashboards changes
+    if (currentDashboard) {
+      const updatedDashboard = dashboards.find(d => d.id === currentDashboard.id);
+      if (updatedDashboard) {
+        setCurrentDashboard(updatedDashboard);
+      }
+    }
+  }, [dashboards, currentDashboard]);
 
   const filteredApps = applications.filter(app => 
     app.name.toLowerCase().includes(searchTerm.toLowerCase())
@@ -45,12 +53,22 @@ const CustomDashboard = () => {
 
     setDashboards(prev => prev.map(dash => {
       if (dash.id === currentDashboard.id) {
-        return {
+        const newSelectedApps = dash.selectedApps.includes(appName)
+          ? dash.selectedApps.filter(a => a !== appName)
+          : [...dash.selectedApps, appName];
+        
+        // Create the updated dashboard
+        const updatedDash = {
           ...dash,
-          selectedApps: dash.selectedApps.includes(appName)
-            ? dash.selectedApps.filter(a => a !== appName)
-            : [...dash.selectedApps, appName]
+          selectedApps: newSelectedApps
         };
+        
+        // Update the current dashboard immediately
+        if (dash.id === currentDashboard.id) {
+          setCurrentDashboard(updatedDash);
+        }
+        
+        return updatedDash;
       }
       return dash;
     }));
