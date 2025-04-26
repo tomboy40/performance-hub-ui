@@ -27,15 +27,7 @@ const CustomDashboard = () => {
 
   useEffect(() => {
     localStorage.setItem("custom-dashboards", JSON.stringify(dashboards));
-    
-    // Update currentDashboard whenever dashboards changes
-    if (currentDashboard) {
-      const updatedDashboard = dashboards.find(d => d.id === currentDashboard.id);
-      if (updatedDashboard) {
-        setCurrentDashboard(updatedDashboard);
-      }
-    }
-  }, [dashboards, currentDashboard]);
+  }, [dashboards]);
 
   const filteredApps = applications.filter(app => 
     app.name.toLowerCase().includes(searchTerm.toLowerCase())
@@ -51,27 +43,22 @@ const CustomDashboard = () => {
       return;
     }
 
-    setDashboards(prev => prev.map(dash => {
-      if (dash.id === currentDashboard.id) {
-        const newSelectedApps = dash.selectedApps.includes(appName)
-          ? dash.selectedApps.filter(a => a !== appName)
-          : [...dash.selectedApps, appName];
-        
-        // Create the updated dashboard
-        const updatedDash = {
-          ...dash,
-          selectedApps: newSelectedApps
-        };
-        
-        // Update the current dashboard immediately
-        if (dash.id === currentDashboard.id) {
-          setCurrentDashboard(updatedDash);
-        }
-        
-        return updatedDash;
-      }
-      return dash;
-    }));
+    // Create the new list of selected apps for the current dashboard
+    const newSelectedApps = currentDashboard.selectedApps.includes(appName)
+      ? currentDashboard.selectedApps.filter(a => a !== appName)
+      : [...currentDashboard.selectedApps, appName];
+
+    // Create an updated dashboard with the new selected apps
+    const updatedDashboard = {
+      ...currentDashboard,
+      selectedApps: newSelectedApps
+    };
+
+    // Update both states at once to ensure UI is immediately consistent
+    setCurrentDashboard(updatedDashboard);
+    setDashboards(prev => prev.map(dash => 
+      dash.id === currentDashboard.id ? updatedDashboard : dash
+    ));
   };
 
   const toggleAppExpansion = (appName: string) => {
