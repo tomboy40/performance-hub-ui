@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import DashboardLayout from "@/components/DashboardLayout";
@@ -70,7 +71,7 @@ const Index = () => {
       name: "Order Processing System", 
       date: "Today, 10:30 AM", 
       icon: Folder,
-      status: "on-schedule",
+      status: "on-schedule" as const,
       metrics: {
         breached: 2,
         atRisk: 3,
@@ -82,7 +83,7 @@ const Index = () => {
       name: "Payment Gateway API", 
       date: "Yesterday, 3:45 PM", 
       icon: ArrowRight,
-      status: "at-risk",
+      status: "at-risk" as const,
       metrics: {
         breached: 1,
         atRisk: 5,
@@ -94,7 +95,7 @@ const Index = () => {
       name: "Customer Records", 
       date: "Yesterday, 11:20 AM", 
       icon: Database,
-      status: "breached",
+      status: "breached" as const,
       metrics: {
         breached: 4,
         atRisk: 2,
@@ -106,7 +107,7 @@ const Index = () => {
       name: "Inventory Management", 
       date: "2 days ago", 
       icon: Folder,
-      status: "on-schedule",
+      status: "on-schedule" as const,
       metrics: {
         breached: 0,
         atRisk: 2,
@@ -118,7 +119,7 @@ const Index = () => {
       name: "Shipping Integration", 
       date: "3 days ago", 
       icon: ArrowRight,
-      status: "breached",
+      status: "breached" as const,
       metrics: {
         breached: 3,
         atRisk: 4,
