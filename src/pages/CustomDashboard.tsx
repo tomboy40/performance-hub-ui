@@ -1,6 +1,6 @@
 
-import { useState } from "react";
-import DashboardLayout from "@/components/DashboardLayout"; // Changed from named import to default import
+import { useState, useEffect } from "react";
+import DashboardLayout from "@/components/DashboardLayout";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -10,25 +10,50 @@ import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import StatusIndicator from "@/components/StatusIndicator";
 import { mockData } from "@/data/mockData";
+import { DashboardManager, type Dashboard } from "@/components/DashboardManager";
+import { toast } from "@/components/ui/use-toast";
 
 const CustomDashboard = () => {
   const [searchTerm, setSearchTerm] = useState("");
-  const [selectedApps, setSelectedApps] = useState<string[]>([]);
   const [expandedApps, setExpandedApps] = useState<string[]>([]);
+  const [dashboards, setDashboards] = useState<Dashboard[]>(() => {
+    const saved = localStorage.getItem("custom-dashboards");
+    return saved ? JSON.parse(saved) : [];
+  });
+  const [currentDashboard, setCurrentDashboard] = useState<Dashboard | null>(null);
 
   const applications = mockData.applications;
   const interfaces = mockData.interfaces;
+
+  useEffect(() => {
+    localStorage.setItem("custom-dashboards", JSON.stringify(dashboards));
+  }, [dashboards]);
 
   const filteredApps = applications.filter(app => 
     app.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   const toggleAppSelection = (appName: string) => {
-    setSelectedApps(prev => 
-      prev.includes(appName) 
-        ? prev.filter(a => a !== appName)
-        : [...prev, appName]
-    );
+    if (!currentDashboard) {
+      toast({
+        title: "No dashboard selected",
+        description: "Please select or create a dashboard first",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setDashboards(prev => prev.map(dash => {
+      if (dash.id === currentDashboard.id) {
+        return {
+          ...dash,
+          selectedApps: dash.selectedApps.includes(appName)
+            ? dash.selectedApps.filter(a => a !== appName)
+            : [...dash.selectedApps, appName]
+        };
+      }
+      return dash;
+    }));
   };
 
   const toggleAppExpansion = (appName: string) => {
@@ -46,17 +71,65 @@ const CustomDashboard = () => {
     return "on-schedule";
   };
 
+  const handleCreateDashboard = (name: string) => {
+    const newDashboard: Dashboard = {
+      id: crypto.randomUUID(),
+      name,
+      selectedApps: []
+    };
+    setDashboards(prev => [...prev, newDashboard]);
+    setCurrentDashboard(newDashboard);
+    toast({
+      title: "Dashboard created",
+      description: `${name} has been created successfully.`
+    });
+  };
+
+  const handleSelectDashboard = (dashboard: Dashboard) => {
+    setCurrentDashboard(dashboard);
+  };
+
+  const handleDeleteDashboard = (dashboardId: string) => {
+    setDashboards(prev => prev.filter(d => d.id !== dashboardId));
+    if (currentDashboard?.id === dashboardId) {
+      setCurrentDashboard(null);
+    }
+    toast({
+      title: "Dashboard deleted",
+      description: "The dashboard has been deleted successfully."
+    });
+  };
+
+  const handleRenameDashboard = (dashboardId: string, newName: string) => {
+    setDashboards(prev => prev.map(dash => 
+      dash.id === dashboardId ? { ...dash, name: newName } : dash
+    ));
+    toast({
+      title: "Dashboard renamed",
+      description: `Dashboard has been renamed to ${newName}.`
+    });
+  };
+
   return (
     <SidebarProvider>
       <div className="flex min-h-screen bg-background">
         <DashboardLayout>
           <div className="container mx-auto px-4 md:px-6 py-6">
             <div className="flex justify-between items-center mb-6">
-              <h1 className="text-2xl font-bold tracking-tight">Custom Dashboard</h1>
+              <h1 className="text-2xl font-bold tracking-tight">Custom Dashboards</h1>
               <Button variant="outline" asChild>
                 <a href="/">Back to Main Dashboard</a>
               </Button>
             </div>
+
+            <DashboardManager
+              dashboards={dashboards}
+              currentDashboard={currentDashboard}
+              onCreateDashboard={handleCreateDashboard}
+              onSelectDashboard={handleSelectDashboard}
+              onDeleteDashboard={handleDeleteDashboard}
+              onRenameDashboard={handleRenameDashboard}
+            />
 
             <div className="grid grid-cols-12 gap-6">
               {/* Application Selection Panel */}
@@ -80,7 +153,7 @@ const CustomDashboard = () => {
                         <div key={app.name} className="flex items-center space-x-2">
                           <Checkbox
                             id={app.name}
-                            checked={selectedApps.includes(app.name)}
+                            checked={currentDashboard?.selectedApps.includes(app.name)}
                             onCheckedChange={() => toggleAppSelection(app.name)}
                           />
                           <label
@@ -98,7 +171,15 @@ const CustomDashboard = () => {
 
               {/* Selected Applications Dashboard */}
               <div className="col-span-12 md:col-span-8 space-y-6">
-                {selectedApps.length === 0 ? (
+                {!currentDashboard ? (
+                  <Card>
+                    <CardContent className="flex items-center justify-center h-32">
+                      <p className="text-muted-foreground">
+                        Select or create a dashboard to get started
+                      </p>
+                    </CardContent>
+                  </Card>
+                ) : currentDashboard.selectedApps.length === 0 ? (
                   <Card>
                     <CardContent className="flex items-center justify-center h-32">
                       <p className="text-muted-foreground">
@@ -107,7 +188,7 @@ const CustomDashboard = () => {
                     </CardContent>
                   </Card>
                 ) : (
-                  selectedApps.map(appName => {
+                  currentDashboard.selectedApps.map(appName => {
                     const appInterfaces = interfaces.filter(i => i.application === appName);
                     const isExpanded = expandedApps.includes(appName);
                     const status = getAppStatus(appName);
