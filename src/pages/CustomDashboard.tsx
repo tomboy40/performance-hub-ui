@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import DashboardLayout from "@/components/DashboardLayout";
 import { SidebarProvider } from "@/components/ui/sidebar";
@@ -43,18 +42,15 @@ const CustomDashboard = () => {
       return;
     }
 
-    // Create the new list of selected apps for the current dashboard
     const newSelectedApps = currentDashboard.selectedApps.includes(appName)
       ? currentDashboard.selectedApps.filter(a => a !== appName)
       : [...currentDashboard.selectedApps, appName];
 
-    // Create an updated dashboard with the new selected apps
     const updatedDashboard = {
       ...currentDashboard,
       selectedApps: newSelectedApps
     };
 
-    // Update both states at once to ensure UI is immediately consistent
     setCurrentDashboard(updatedDashboard);
     setDashboards(prev => prev.map(dash => 
       dash.id === currentDashboard.id ? updatedDashboard : dash
@@ -86,12 +82,16 @@ const CustomDashboard = () => {
     setCurrentDashboard(newDashboard);
     toast({
       title: "Dashboard created",
-      description: `${name} has been created successfully.`
+      description: `${name} has been created successfully. You can now add applications to it.`
     });
   };
 
   const handleSelectDashboard = (dashboard: Dashboard) => {
     setCurrentDashboard(dashboard);
+    toast({
+      title: "Dashboard selected",
+      description: `${dashboard.name} is now active.`
+    });
   };
 
   const handleDeleteDashboard = (dashboardId: string) => {
@@ -121,7 +121,14 @@ const CustomDashboard = () => {
         <DashboardLayout>
           <div className="container mx-auto px-4 md:px-6 py-6">
             <div className="flex justify-between items-center mb-6">
-              <h1 className="text-2xl font-bold tracking-tight">Custom Dashboards</h1>
+              <div className="space-y-1">
+                <h1 className="text-2xl font-bold tracking-tight">Custom Dashboards</h1>
+                {currentDashboard && (
+                  <p className="text-muted-foreground">
+                    Currently viewing: {currentDashboard.name}
+                  </p>
+                )}
+              </div>
               <Button variant="outline" asChild>
                 <a href="/">Back to Main Dashboard</a>
               </Button>
@@ -137,7 +144,6 @@ const CustomDashboard = () => {
             />
 
             <div className="grid grid-cols-12 gap-6">
-              {/* Application Selection Panel */}
               <Card className="col-span-12 md:col-span-4">
                 <CardHeader>
                   <CardTitle>Select Applications</CardTitle>
@@ -174,7 +180,6 @@ const CustomDashboard = () => {
                 </CardContent>
               </Card>
 
-              {/* Selected Applications Dashboard */}
               <div className="col-span-12 md:col-span-8 space-y-6">
                 {!currentDashboard ? (
                   <Card>

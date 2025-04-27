@@ -84,9 +84,9 @@ export function DashboardManager({
           {dashboards.map((dashboard) => (
             <div
               key={dashboard.id}
-              className={`flex items-center justify-between p-2 rounded-md ${
+              className={`flex items-center justify-between p-2 rounded-md transition-colors ${
                 currentDashboard?.id === dashboard.id
-                  ? "bg-accent"
+                  ? "bg-primary/10 border border-primary/20"
                   : "hover:bg-accent/50"
               }`}
             >
@@ -108,7 +108,11 @@ export function DashboardManager({
                 <>
                   <button
                     onClick={() => onSelectDashboard(dashboard)}
-                    className="flex-1 text-left px-2 py-1 hover:text-primary transition-colors"
+                    className={`flex-1 text-left px-2 py-1 transition-colors ${
+                      currentDashboard?.id === dashboard.id
+                        ? "text-primary font-medium"
+                        : "hover:text-primary"
+                    }`}
                   >
                     {dashboard.name}
                   </button>
